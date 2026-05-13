@@ -68,26 +68,16 @@ Analytics Service
 ├── revenue_stats  (totalOrders, totalRevenue)
 └── product_stats  (per-product sales and revenue)
 ```
-
----
-
-## 🚀 Quick Start
-
-### Prerequisites
-- Docker + Docker Compose
-- (Optional) Node.js 20+ for local development
-
-### Run with Docker Compose
-
-```bash
-git clone <repo-url>
-cd micro-coffee-system
-
-docker compose up --build
+Cách triển khai trên máy:
+Bước 1: Chạy powersehll bằng run as administrator
+Bước 2: Nhập wsl --install (chạy xong thì khởi động lại máy nếu có yêu cầu)
+Bước 3: Tải docker: https://www.docker.com/products/docker-desktop/ (chọn docker-desktop -> window AMD64 -> chạy file vừa tải về -> chọn per user installation)
+Bước 4: Sau khi tải xong, mở docker mở Docker Desktop: Settings → Resources → WSL Integration → bật distro Ubuntu. (thông thường mặc định là đã mở rồi)
+Bước 5: Tải code về, giải nén.
+Bước 6: Vào file sau khi đã giải nén, trỏ vào thanh đường dẫn thư mục -> nhập powersell -> cửa sổ powershell đang trỏ sẵn file code hiện ra
+Bước 7: Nhập docker compose up --build vào powershell để build và khởi chạy toàn bộ hệ thống
+Bước 8: Muốn truy cập vào phần nào thì nhìn "Access the app" bên dưới.
 ```
-
-Wait ~60 seconds for all services to start.
-
 ### Access the app
 
 | Service           | URL                             |
@@ -156,71 +146,3 @@ micro-coffee-system/
         ├── store/              # Zustand auth store
         └── types/              # TypeScript types
 ```
-
----
-
-## 🔑 Key Patterns Demonstrated
-
-| Pattern | Where |
-|---------|-------|
-| **API Gateway** | `gateway/` — central entry point, JWT validation |
-| **Database per Service** | Each service has its own PostgreSQL database |
-| **Saga (Choreography)** | `order-service` ↔ `inventory-service` via events |
-| **CQRS (Read model)** | `analytics-service` — reads from events, never queries other DBs |
-| **Event-Driven Architecture** | RabbitMQ topic exchange `coffee-shop` |
-| **JWT Authentication** | `auth-service` issues tokens, `gateway` validates |
-
----
-
-## 🐇 RabbitMQ Events
-
-| Routing Key         | Publisher         | Consumer(s)                     |
-|---------------------|-------------------|---------------------------------|
-| `order.created`     | Order Service     | Inventory Service               |
-| `inventory.reserved`| Inventory Service | Order Service                   |
-| `inventory.failed`  | Inventory Service | Order Service                   |
-| `order.confirmed`   | Order Service     | Analytics Service               |
-
----
-
-## 🛠️ Local Development (without Docker)
-
-```bash
-# Start infrastructure only
-docker compose up auth-db order-db inventory-db analytics-db rabbitmq -d
-
-# Auth Service
-cd auth-service && npm install
-npx prisma migrate deploy && npx prisma db seed
-npm run start:dev
-
-# Order Service
-cd order-service && npm install
-npx prisma migrate deploy
-npm run start:dev
-
-# Inventory Service
-cd inventory-service && npm install
-npx prisma migrate deploy && npx prisma db seed
-npm run start:dev
-
-# Analytics Service
-cd analytics-service && npm install
-npx prisma migrate deploy
-npm run start:dev
-
-# Gateway
-cd gateway && npm install
-npm run start:dev
-
-# Frontend
-cd frontend && npm install
-npm run dev
-```
-
----
-
-## 📚 Further Reading
-
-- *Microservices Patterns* — Chris Richardson (Manning, 2019)
-- [microservices.io](https://microservices.io) — Pattern catalogue
