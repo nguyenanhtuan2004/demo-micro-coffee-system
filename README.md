@@ -69,6 +69,7 @@ Analytics Service
 └── product_stats  (per-product sales and revenue)
 ```
 Cách triển khai trên máy:
+```
 Bước 1: Chạy powersehll bằng run as administrator
 Bước 2: Nhập wsl --install (chạy xong thì khởi động lại máy nếu có yêu cầu)
 Bước 3: Tải docker: https://www.docker.com/products/docker-desktop/ (chọn docker-desktop -> window AMD64 -> chạy file vừa tải về -> chọn per user installation)
