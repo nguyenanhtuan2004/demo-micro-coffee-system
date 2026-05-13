@@ -1,0 +1,226 @@
+# ☕ Brew & Go — Microservices Coffee Shop
+
+> A **portfolio-ready** demo microservices system inspired by *Microservices Patterns* by Chris Richardson.
+> Demonstrates Saga, CQRS, Event-Driven Architecture, API Gateway, and independent service databases.
+
+---
+
+## 🏗️ Architecture Overview
+
+```
+Browser (Next.js)
+       │
+       ▼
+ ┌─────────────┐
+ │  API Gateway │  :3000  ← JWT validation, request routing
+ └──────┬──────┘
+        │
+   ┌────┴──────────────────────┐
+   │           │               │              │
+   ▼           ▼               ▼              ▼
+Auth Svc   Order Svc      Inventory Svc   Analytics Svc
+ :3001      :3002              :3003          :3004
+   │           │               │              │
+auth_db    order_db        inventory_db   analytics_db
+              │
+              └──── RabbitMQ ─────────────────┘
+                     :5672
+```
+
+---
+
+## 🔄 Saga Pattern Flow
+
+```
+Frontend → Gateway → Order Service
+                          │
+                          ├─ Creates Order (PENDING)
+                          │
+                          └─ Publishes ──► [order.created]
+                                                │
+                                          Inventory Service
+                                          checks stock
+                                         /              \
+                                    OK                  FAIL
+                                     │                    │
+                              [inventory.reserved]  [inventory.failed]
+                                     │                    │
+                              Order → CONFIRMED     Order → REJECTED
+                                     │
+                              [order.confirmed]
+                                     │
+                              Analytics Service
+                              updates read model
+```
+
+---
+
+## 📊 CQRS Demonstration
+
+The **Analytics Service** never queries the Order Service database.
+It builds its own read model exclusively by consuming `order.confirmed` events:
+
+```
+Order Confirmed Event
+       │
+       ▼
+Analytics Service
+├── revenue_stats  (totalOrders, totalRevenue)
+└── product_stats  (per-product sales and revenue)
+```
+
+---
+
+## 🚀 Quick Start
+
+### Prerequisites
+- Docker + Docker Compose
+- (Optional) Node.js 20+ for local development
+
+### Run with Docker Compose
+
+```bash
+git clone <repo-url>
+cd micro-coffee-system
+
+docker compose up --build
+```
+
+Wait ~60 seconds for all services to start.
+
+### Access the app
+
+| Service           | URL                             |
+|-------------------|---------------------------------|
+| Frontend          | http://localhost:3005            |
+| API Gateway       | http://localhost:3000            |
+| RabbitMQ UI       | http://localhost:15672           |
+| Auth Service      | http://localhost:3001            |
+| Order Service     | http://localhost:3002            |
+| Inventory Service | http://localhost:3003            |
+| Analytics Service | http://localhost:3004            |
+
+### Demo Login
+
+```
+Email:    admin@example.com
+Password: 123456
+```
+
+---
+
+## 📁 Project Structure
+
+```
+micro-coffee-system/
+│
+├── docker-compose.yml          # Orchestrates all services
+│
+├── gateway/                    # API Gateway (NestJS)
+│   └── src/
+│       ├── middleware/         # JWT auth middleware
+│       └── gateway/            # Proxy controller + service
+│
+├── auth-service/               # Auth (NestJS + Prisma)
+│   ├── prisma/schema.prisma    # users table
+│   └── src/auth/               # login + JWT generation
+│
+├── order-service/              # Orders (NestJS + Prisma + RabbitMQ)
+│   ├── prisma/schema.prisma    # orders + order_items tables
+│   └── src/
+│       ├── orders/             # CRUD + Saga orchestration
+│       └── messaging/          # RabbitMQ producer/consumer
+│
+├── inventory-service/          # Inventory (NestJS + Prisma + RabbitMQ)
+│   ├── prisma/schema.prisma    # inventory table
+│   └── src/
+│       ├── inventory/          # Stock management + Saga participant
+│       └── messaging/          # Event consumer
+│
+├── analytics-service/          # Analytics (NestJS + Prisma + RabbitMQ)
+│   ├── prisma/schema.prisma    # revenue_stats + product_stats (read model)
+│   └── src/
+│       ├── analytics/          # CQRS read model + REST query
+│       └── messaging/          # Event consumer
+│
+└── frontend/                   # Next.js 15 + TailwindCSS
+    └── src/
+        ├── app/
+        │   ├── login/          # Login page
+        │   └── (dashboard)/
+        │       ├── orders/     # Order management
+        │       ├── inventory/  # Stock view
+        │       └── analytics/  # Revenue + top products
+        ├── components/         # Sidebar, Card, StatusBadge, etc.
+        ├── lib/                # Axios client, menu data
+        ├── store/              # Zustand auth store
+        └── types/              # TypeScript types
+```
+
+---
+
+## 🔑 Key Patterns Demonstrated
+
+| Pattern | Where |
+|---------|-------|
+| **API Gateway** | `gateway/` — central entry point, JWT validation |
+| **Database per Service** | Each service has its own PostgreSQL database |
+| **Saga (Choreography)** | `order-service` ↔ `inventory-service` via events |
+| **CQRS (Read model)** | `analytics-service` — reads from events, never queries other DBs |
+| **Event-Driven Architecture** | RabbitMQ topic exchange `coffee-shop` |
+| **JWT Authentication** | `auth-service` issues tokens, `gateway` validates |
+
+---
+
+## 🐇 RabbitMQ Events
+
+| Routing Key         | Publisher         | Consumer(s)                     |
+|---------------------|-------------------|---------------------------------|
+| `order.created`     | Order Service     | Inventory Service               |
+| `inventory.reserved`| Inventory Service | Order Service                   |
+| `inventory.failed`  | Inventory Service | Order Service                   |
+| `order.confirmed`   | Order Service     | Analytics Service               |
+
+---
+
+## 🛠️ Local Development (without Docker)
+
+```bash
+# Start infrastructure only
+docker compose up auth-db order-db inventory-db analytics-db rabbitmq -d
+
+# Auth Service
+cd auth-service && npm install
+npx prisma migrate deploy && npx prisma db seed
+npm run start:dev
+
+# Order Service
+cd order-service && npm install
+npx prisma migrate deploy
+npm run start:dev
+
+# Inventory Service
+cd inventory-service && npm install
+npx prisma migrate deploy && npx prisma db seed
+npm run start:dev
+
+# Analytics Service
+cd analytics-service && npm install
+npx prisma migrate deploy
+npm run start:dev
+
+# Gateway
+cd gateway && npm install
+npm run start:dev
+
+# Frontend
+cd frontend && npm install
+npm run dev
+```
+
+---
+
+## 📚 Further Reading
+
+- *Microservices Patterns* — Chris Richardson (Manning, 2019)
+- [microservices.io](https://microservices.io) — Pattern catalogue
