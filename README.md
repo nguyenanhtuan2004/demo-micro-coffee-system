@@ -68,19 +68,9 @@ Analytics Service
 ├── revenue_stats  (totalOrders, totalRevenue)
 └── product_stats  (per-product sales and revenue)
 ```
-Cách triển khai trên máy:
-```
-Bước 1: Chạy powersehll bằng run as administrator
-Bước 2: Nhập wsl --install (chạy xong thì khởi động lại máy nếu có yêu cầu)
-Bước 3: Tải docker: https://www.docker.com/products/docker-desktop/ (chọn docker-desktop -> window AMD64 -> chạy file vừa tải về -> chọn per user installation)
-Bước 4: Sau khi tải xong, mở docker mở Docker Desktop: Settings → Resources → WSL Integration → bật distro Ubuntu. (thông thường mặc định là đã mở rồi)
-Bước 5: Tải code về, giải nén.
-Bước 6: Vào file sau khi đã giải nén, trỏ vào thanh đường dẫn thư mục -> nhập powersell -> cửa sổ powershell đang trỏ sẵn file code hiện ra
-Bước 7: Nhập docker compose up --build vào powershell để build và khởi chạy toàn bộ hệ thống
-Bước 8: Muốn truy cập vào phần nào thì nhìn "Access the app" bên dưới.
-```
-### Access the app
 
+### Access the app
+```
 | Service           | URL                             |
 |-------------------|---------------------------------|
 | Frontend          | http://localhost:3005            |
