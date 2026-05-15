@@ -1,6 +1,6 @@
-# ☕ Brew & Go — Microservices Coffee Shop
+# Nhóm 2 — Microservices - System Coffee Shop
 
-> A **portfolio-ready** demo microservices system inspired by *Microservices Patterns* by Chris Richardson.
+> Hệ thống microservices demo xây dựng dựa trên kiến trúc trong cuốn *Microservices Patterns* của Chris Richardson.
 > Demonstrates Saga, CQRS, Event-Driven Architecture, API Gateway, and independent service databases.
 
 ---
@@ -12,7 +12,7 @@ Browser (Next.js)
        │
        ▼
  ┌─────────────┐
- │  API Gateway │  :3000  ← JWT validation, request routing
+ │  API Gateway│  :3000  ← JWT validation, request routing
  └──────┬──────┘
         │
    ┌────┴──────────────────────┐

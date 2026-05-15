@@ -7,7 +7,7 @@ import { Toaster } from 'sonner';
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-  title: 'Brew & Go — Coffee Shop',
+  title: 'Nhóm 2 — System Coffee Shop',
   description: 'Microservices Coffee Shop Management System',
 };
 

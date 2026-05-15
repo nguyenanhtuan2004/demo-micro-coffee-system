@@ -23,10 +23,10 @@ export default function LoginPage() {
     try {
       const res = await api.post<LoginResponse>('/auth/login', { email, password });
       setAuth(res.data.user, res.data.accessToken);
-      toast.success(`Welcome back, ${res.data.user.name}!`);
+      toast.success(`Chào mừng trở lại, ${res.data.user.name}!`);
       router.replace('/orders');
     } catch (err: any) {
-      const message = err.response?.data?.message || 'Login failed. Please check your credentials.';
+      const message = err.response?.data?.message || 'Đăng nhập thất bại. Vui lòng kiểm tra lại thông tin đăng nhập.';
       toast.error(message);
     } finally {
       setLoading(false);
@@ -42,13 +42,13 @@ export default function LoginPage() {
           <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-coffee-600 shadow-lg mb-4">
             <Coffee className="w-8 h-8 text-white" />
           </div>
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Brew &amp; Go</h1>
-          <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">Coffee Shop Management</p>
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Nhóm 2</h1>
+          <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">System Coffee Shop</p>
         </div>
 
         {/* Form card */}
         <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-xl border border-gray-200 dark:border-gray-800 p-8">
-          <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-6">Sign in to your account</h2>
+          <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-6">Đăng nhập tài khoản của bạn</h2>
 
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
@@ -67,7 +67,7 @@ export default function LoginPage() {
 
             <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">
-                Password
+                Mật khẩu
               </label>
               <div className="relative">
                 <input
@@ -96,17 +96,17 @@ export default function LoginPage() {
               {loading ? (
                 <>
                   <Loader2 className="w-4 h-4 animate-spin" />
-                  Signing in...
+                  Đang đăng nhập...
                 </>
               ) : (
-                'Sign in'
+                'Đăng nhập'
               )}
             </button>
           </form>
 
           {/* Demo hint */}
           <div className="mt-5 p-3 bg-coffee-50 dark:bg-coffee-900/20 rounded-lg border border-coffee-100 dark:border-coffee-800">
-            <p className="text-xs text-coffee-700 dark:text-coffee-400 font-medium mb-1">Demo credentials</p>
+            <p className="text-xs text-coffee-700 dark:text-coffee-400 font-medium mb-1">Sử dụng Demo</p>
             <p className="text-xs text-coffee-600 dark:text-coffee-500">admin@example.com / 123456</p>
           </div>
         </div>
