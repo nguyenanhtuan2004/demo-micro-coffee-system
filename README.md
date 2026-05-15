@@ -87,7 +87,6 @@ Analytics Service
 ```
 Email:    admin@example.com
 Password: 123456
-
 ```
 ## 📁 Project Structure
 
