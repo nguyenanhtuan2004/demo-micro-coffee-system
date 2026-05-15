@@ -81,15 +81,14 @@ Analytics Service
 | Inventory Service | http://localhost:3003            |
 | Analytics Service | http://localhost:3004            |
 
+```
 ### Demo Login
 
 ```
 Email:    admin@example.com
 Password: 123456
+
 ```
-
----
-
 ## 📁 Project Structure
 
 ```
