@@ -41,8 +41,8 @@ export function Sidebar() {
           <Coffee className="w-5 h-5 text-white" />
         </div>
         <div>
-          <p className="font-bold text-gray-900 dark:text-white text-sm leading-tight">Brew &amp; Go</p>
-          <p className="text-xs text-gray-500 dark:text-gray-400">Coffee Shop</p>
+          <p className="font-bold text-gray-900 dark:text-white text-sm leading-tight">Nhóm 2</p>
+          <p className="text-xs text-gray-500 dark:text-gray-400">System Coffee Shop</p>
         </div>
       </div>
 
