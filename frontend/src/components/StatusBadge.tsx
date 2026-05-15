@@ -2,15 +2,15 @@ import { OrderStatus } from '@/types';
 
 const config: Record<OrderStatus, { label: string; className: string }> = {
   PENDING: {
-    label: 'Pending',
+    label: 'Chờ xử lý',
     className: 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400',
   },
   CONFIRMED: {
-    label: 'Confirmed',
+    label: 'Đã xác nhận',
     className: 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400',
   },
   REJECTED: {
-    label: 'Rejected',
+    label: 'Đã hủy',
     className: 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400',
   },
 };

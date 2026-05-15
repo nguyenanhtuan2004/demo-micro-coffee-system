@@ -1,6 +1,12 @@
-import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
+import {
+  Injectable,
+  Logger,
+  NotFoundException,
+  OnModuleInit,
+} from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { RabbitMQService } from '../messaging/rabbitmq.service';
+import { RestockDto } from './dto/restock.dto';
 
 const ROUTING = {
   ORDER_CREATED: 'order.created',
@@ -32,11 +38,10 @@ export class InventoryService implements OnModuleInit {
   ) {}
 
   async onModuleInit() {
-    // Give RabbitMQ time to connect before subscribing
     setTimeout(() => this.subscribeToOrders(), 5000);
   }
 
-  // ── Saga Step 2: Listen for new orders, validate and reserve stock ────
+  // ── Saga Step 2: Lắng nghe order mới, validate và trừ kho ────────────
 
   private async subscribeToOrders() {
     await this.mq.subscribe(
@@ -51,7 +56,6 @@ export class InventoryService implements OnModuleInit {
   private async handleOrderCreated(event: OrderCreatedEvent) {
     this.logger.log(`Processing inventory for order ${event.orderId}`);
 
-    // Validate all items have sufficient stock
     const stockChecks = await Promise.all(
       event.items.map(async (item) => {
         const stock = await this.prisma.inventory.findUnique({
@@ -68,21 +72,15 @@ export class InventoryService implements OnModuleInit {
     const failed = stockChecks.find((c) => !c.sufficient);
 
     if (failed) {
-      // Saga compensate: publish InventoryFailed
       const reason = failed.stock
         ? `Insufficient stock for "${failed.item.name}": requested ${failed.item.quantity}, available ${failed.stock.quantity}`
         : `Product "${failed.item.name}" not found in inventory`;
 
       this.logger.warn(`❌ Inventory failed for order ${event.orderId}: ${reason}`);
-
-      await this.mq.publish(ROUTING.INVENTORY_FAILED, {
-        orderId: event.orderId,
-        reason,
-      });
+      await this.mq.publish(ROUTING.INVENTORY_FAILED, { orderId: event.orderId, reason });
       return;
     }
 
-    // Deduct stock for each item
     for (const { item } of stockChecks) {
       await this.prisma.inventory.update({
         where: { productId: item.productId },
@@ -91,15 +89,40 @@ export class InventoryService implements OnModuleInit {
     }
 
     this.logger.log(`✅ Inventory reserved for order ${event.orderId}`);
-
-    await this.mq.publish(ROUTING.INVENTORY_RESERVED, {
-      orderId: event.orderId,
-    });
+    await this.mq.publish(ROUTING.INVENTORY_RESERVED, { orderId: event.orderId });
   }
 
-  // ── REST Query ────────────────────────────────────────────────────────
+  // ── REST: đọc toàn bộ kho ────────────────────────────────────────────
 
   findAll() {
     return this.prisma.inventory.findMany({ orderBy: { name: 'asc' } });
+  }
+
+  // ── REST: nhập kho (admin only) ───────────────────────────────────────
+
+  async restock(productId: string, dto: RestockDto) {
+    const item = await this.prisma.inventory.findUnique({ where: { productId } });
+
+    if (!item) {
+      throw new NotFoundException(`Product "${productId}" not found in inventory`);
+    }
+
+    const operation = dto.operation ?? 'add';
+
+    const updated = await this.prisma.inventory.update({
+      where: { productId },
+      data: {
+        quantity:
+          operation === 'set'
+            ? dto.quantity
+            : { increment: dto.quantity },
+      },
+    });
+
+    this.logger.log(
+      `📦 Restock [${operation}] "${item.name}": ${item.quantity} → ${updated.quantity}`,
+    );
+
+    return updated;
   }
 }

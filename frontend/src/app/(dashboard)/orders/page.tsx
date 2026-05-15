@@ -39,12 +39,12 @@ export default function OrdersPage() {
     },
     onSuccess: (order) => {
       queryClient.invalidateQueries({ queryKey: ['orders'] });
-      toast.success(`Order #${order.id.slice(0, 8)} placed — waiting for confirmation`);
+      toast.success(`Đơn hàng #${order.id.slice(0, 8)} đã được đặt — chờ xác nhận`);
       setCart([]);
       setShowForm(false);
     },
     onError: (err: any) => {
-      toast.error(err.response?.data?.message || 'Failed to create order');
+      toast.error(err.response?.data?.message || 'Đặt đơn hàng thất bại');
     },
   });
 
@@ -94,8 +94,8 @@ export default function OrdersPage() {
       {/* Page header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-xl font-bold text-gray-900 dark:text-white">Orders</h1>
-          <p className="text-sm text-gray-500 dark:text-gray-400 mt-0.5">Manage coffee orders</p>
+          <h1 className="text-xl font-bold text-gray-900 dark:text-white">Đơn hàng</h1>
+          <p className="text-sm text-gray-500 dark:text-gray-400 mt-0.5">Quản lý đơn đặt hàng</p>
         </div>
         <div className="flex items-center gap-2">
           <button
@@ -109,7 +109,7 @@ export default function OrdersPage() {
             className="flex items-center gap-2 px-4 py-2 bg-coffee-600 hover:bg-coffee-700 text-white rounded-lg text-sm font-medium transition-colors"
           >
             <Plus className="w-4 h-4" />
-            New Order
+            Đơn hàng mới
           </button>
         </div>
       </div>
@@ -146,7 +146,7 @@ export default function OrdersPage() {
             <CardHeader>
               <CardTitle>
                 <span className="flex items-center gap-2">
-                  <ShoppingCart className="w-4 h-4" /> Cart
+                  <ShoppingCart className="w-4 h-4" /> Giỏ hàng
                   {cart.length > 0 && (
                     <span className="ml-1 bg-coffee-600 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
                       {cart.reduce((s, c) => s + c.quantity, 0)}
@@ -156,14 +156,14 @@ export default function OrdersPage() {
               </CardTitle>
               {cart.length > 0 && (
                 <button onClick={() => setCart([])} className="text-xs text-gray-400 hover:text-red-500 transition-colors">
-                  Clear
+                  Xóa
                 </button>
               )}
             </CardHeader>
 
             {cart.length === 0 ? (
               <p className="text-sm text-gray-400 dark:text-gray-500 text-center py-6">
-                No items added yet
+                Chưa có sản phẩm nào được thêm vào
               </p>
             ) : (
               <div className="space-y-2">
@@ -193,7 +193,7 @@ export default function OrdersPage() {
 
                 <div className="pt-3">
                   <div className="flex items-center justify-between mb-3">
-                    <span className="text-sm font-semibold text-gray-900 dark:text-white">Total</span>
+                    <span className="text-sm font-semibold text-gray-900 dark:text-white">Tổng</span>
                     <span className="text-sm font-bold text-coffee-600">${cartTotal.toFixed(2)}</span>
                   </div>
                   <button
@@ -202,9 +202,9 @@ export default function OrdersPage() {
                     className="w-full flex items-center justify-center gap-2 py-2.5 bg-coffee-600 hover:bg-coffee-700 disabled:opacity-60 text-white font-medium rounded-lg text-sm transition-colors"
                   >
                     {createOrder.isPending ? (
-                      <><Loader2 className="w-4 h-4 animate-spin" /> Placing order...</>
+                      <><Loader2 className="w-4 h-4 animate-spin" /> Đang đặt hàng...</>
                     ) : (
-                      'Place Order'
+                      'Đặt hàng'
                     )}
                   </button>
                 </div>
@@ -217,8 +217,8 @@ export default function OrdersPage() {
       {/* Orders table */}
       <Card>
         <CardHeader>
-          <CardTitle>Recent Orders</CardTitle>
-          <span className="text-xs text-gray-400">Auto-refreshes every 4s</span>
+          <CardTitle>Đơn đặt hàng gần đây</CardTitle>
+          {/* <span className="text-xs text-gray-400">Auto-refreshes every 4s</span> */}
         </CardHeader>
 
         {isLoading ? (
@@ -228,18 +228,18 @@ export default function OrdersPage() {
         ) : orders.length === 0 ? (
           <div className="text-center py-12">
             <ShoppingCart className="w-10 h-10 text-gray-300 dark:text-gray-600 mx-auto mb-3" />
-            <p className="text-sm text-gray-500 dark:text-gray-400">No orders yet. Create your first order!</p>
+            <p className="text-sm text-gray-500 dark:text-gray-400">Chưa có đơn đặt hàng nào. Tạo đơn hàng đầu tiên của bạn!</p>
           </div>
         ) : (
           <div className="overflow-x-auto -mx-5">
             <table className="w-full">
               <thead>
                 <tr className="border-b border-gray-200 dark:border-gray-800">
-                  <th className="text-left text-xs font-semibold text-gray-500 uppercase tracking-wide px-5 py-3">Order ID</th>
-                  <th className="text-left text-xs font-semibold text-gray-500 uppercase tracking-wide px-5 py-3">Items</th>
-                  <th className="text-left text-xs font-semibold text-gray-500 uppercase tracking-wide px-5 py-3">Total</th>
-                  <th className="text-left text-xs font-semibold text-gray-500 uppercase tracking-wide px-5 py-3">Status</th>
-                  <th className="text-left text-xs font-semibold text-gray-500 uppercase tracking-wide px-5 py-3">Time</th>
+                  <th className="text-left text-xs font-semibold text-gray-500 uppercase tracking-wide px-5 py-3">ID đơn hàng</th>
+                  <th className="text-left text-xs font-semibold text-gray-500 uppercase tracking-wide px-5 py-3">Sản phẩm</th>
+                  <th className="text-left text-xs font-semibold text-gray-500 uppercase tracking-wide px-5 py-3">Tổng</th>
+                  <th className="text-left text-xs font-semibold text-gray-500 uppercase tracking-wide px-5 py-3">Trạng thái</th>
+                  <th className="text-left text-xs font-semibold text-gray-500 uppercase tracking-wide px-5 py-3">Thời gian đặt hàng</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-100 dark:divide-gray-800">

@@ -23,9 +23,9 @@ export default function AnalyticsPage() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-xl font-bold text-gray-900 dark:text-white">Analytics</h1>
+          <h1 className="text-xl font-bold text-gray-900 dark:text-white">Thống kê</h1>
           <p className="text-sm text-gray-500 dark:text-gray-400 mt-0.5">
-            CQRS read model — built from order events only
+            Quản lý doanh thu bán hàng và doanh số sản phẩm
           </p>
         </div>
         <button
@@ -45,21 +45,21 @@ export default function AnalyticsPage() {
           {/* KPI cards */}
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <KpiCard
-              label="Total Revenue"
+              label="Tổng doanh thu"
               value={`$${(data?.totalRevenue ?? 0).toFixed(2)}`}
               icon={<DollarSign className="w-5 h-5 text-emerald-600" />}
               bg="bg-emerald-50 dark:bg-emerald-900/20"
               iconBg="bg-emerald-100 dark:bg-emerald-900/40"
             />
             <KpiCard
-              label="Total Orders"
+              label="Tổng đơn hàng"
               value={String(data?.totalOrders ?? 0)}
               icon={<ShoppingCart className="w-5 h-5 text-blue-600" />}
               bg="bg-blue-50 dark:bg-blue-900/20"
               iconBg="bg-blue-100 dark:bg-blue-900/40"
             />
             <KpiCard
-              label="Top Product"
+              label="Sản phẩm bán chạy nhất"
               value={data?.topProducts?.[0]?.name ?? '—'}
               icon={<Trophy className="w-5 h-5 text-amber-600" />}
               bg="bg-amber-50 dark:bg-amber-900/20"
@@ -70,15 +70,15 @@ export default function AnalyticsPage() {
           {/* Top products bar chart */}
           <Card>
             <CardHeader>
-              <CardTitle>Top Selling Products</CardTitle>
-              <span className="text-xs text-gray-400">By units sold</span>
+              <CardTitle>Sản phẩm bán chạy</CardTitle>
+              <span className="text-xs text-gray-400">Theo đơn vị bán</span>
             </CardHeader>
 
             {!data?.allProducts?.length ? (
               <div className="text-center py-12">
                 <BarChart3 className="w-10 h-10 text-gray-300 dark:text-gray-600 mx-auto mb-3" />
                 <p className="text-sm text-gray-500 dark:text-gray-400">
-                  No data yet. Place some orders to see analytics!
+                  Chưa có dữ liệu nào.
                 </p>
               </div>
             ) : (
@@ -114,7 +114,7 @@ export default function AnalyticsPage() {
           </Card>
 
           {/* Architecture note */}
-          <Card className="bg-coffee-50 dark:bg-coffee-900/10 border-coffee-200 dark:border-coffee-800">
+          {/* <Card className="bg-coffee-50 dark:bg-coffee-900/10 border-coffee-200 dark:border-coffee-800">
             <div className="flex items-start gap-3">
               <span className="text-lg mt-0.5">📖</span>
               <div>
@@ -129,7 +129,7 @@ export default function AnalyticsPage() {
                 </p>
               </div>
             </div>
-          </Card>
+          </Card> */}
         </>
       )}
     </div>

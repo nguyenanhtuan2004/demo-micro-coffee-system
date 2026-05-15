@@ -22,6 +22,7 @@ export class AuthMiddleware implements NestMiddleware {
       // Forward user identity to downstream services
       req.headers['x-user-id'] = payload.sub;
       req.headers['x-user-email'] = payload.email;
+      req.headers['x-user-role'] = payload.role;   // <-- thêm role
       next();
     } catch {
       throw new UnauthorizedException('Invalid or expired token');

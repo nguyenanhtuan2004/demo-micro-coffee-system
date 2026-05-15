@@ -2,26 +2,25 @@
 
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
-import {
-  BarChart3,
-  Coffee,
-  LayoutDashboard,
-  LogOut,
-  Package,
-  ShoppingCart,
-} from 'lucide-react';
+import { BarChart3, Coffee, LogOut, Package, ShoppingCart, Users } from 'lucide-react';
 import { useAuthStore } from '@/store/auth.store';
 import { toast } from 'sonner';
 
-const navItems = [
-  { href: '/orders',    label: 'Orders',    icon: ShoppingCart },
-  { href: '/inventory', label: 'Inventory', icon: Package },
-  { href: '/analytics', label: 'Analytics', icon: BarChart3 },
+const allNavItems = [
+  { href: '/orders',    label: 'Đặt hàng',    icon: ShoppingCart, roles: ['admin', 'barista'] },
+  { href: '/inventory', label: 'Tồn kho', icon: Package,      roles: ['admin', 'barista'] },
+  { href: '/analytics', label: 'Thống kê', icon: BarChart3,    roles: ['admin'] },
+  { href: '/staff',     label: 'Nhân sự',     icon: Users,        roles: ['admin'] },
 ];
+
+const ROLE_CONFIG = {
+  admin:   { label: 'Admin',   className: 'bg-coffee-100 text-coffee-700 dark:bg-coffee-900/40 dark:text-coffee-300' },
+  barista: { label: 'Barista', className: 'bg-blue-100 text-blue-700 dark:bg-blue-900/40 dark:text-blue-300' },
+} as const;
 
 export function Sidebar() {
   const pathname = usePathname();
-  const router = useRouter();
+  const router   = useRouter();
   const { user, logout } = useAuthStore();
 
   const handleLogout = () => {
@@ -29,6 +28,10 @@ export function Sidebar() {
     toast.success('Logged out');
     router.replace('/login');
   };
+
+  const role       = user?.role ?? 'barista';
+  const navItems   = allNavItems.filter((item) => item.roles.includes(role));
+  const roleConfig = ROLE_CONFIG[role] ?? ROLE_CONFIG.barista;
 
   return (
     <aside className="w-60 flex-shrink-0 bg-white dark:bg-gray-900 border-r border-gray-200 dark:border-gray-800 flex flex-col">
@@ -64,16 +67,21 @@ export function Sidebar() {
         })}
       </nav>
 
-      {/* User */}
+      {/* User info */}
       <div className="px-3 py-4 border-t border-gray-200 dark:border-gray-800">
         <div className="flex items-center gap-3 px-3 py-2 mb-1">
-          <div className="w-8 h-8 rounded-full bg-coffee-100 dark:bg-coffee-900 flex items-center justify-center">
+          <div className="w-8 h-8 rounded-full bg-coffee-100 dark:bg-coffee-900 flex items-center justify-center flex-shrink-0">
             <span className="text-coffee-700 dark:text-coffee-300 text-xs font-bold uppercase">
-              {user?.name?.[0] ?? 'A'}
+              {user?.name?.[0] ?? 'U'}
             </span>
           </div>
           <div className="flex-1 min-w-0">
-            <p className="text-sm font-medium text-gray-900 dark:text-white truncate">{user?.name ?? 'Admin'}</p>
+            <div className="flex items-center gap-2 mb-0.5">
+              <p className="text-sm font-medium text-gray-900 dark:text-white truncate">{user?.name}</p>
+              <span className={`text-[10px] font-semibold px-1.5 py-0.5 rounded-full flex-shrink-0 ${roleConfig.className}`}>
+                {roleConfig.label}
+              </span>
+            </div>
             <p className="text-xs text-gray-500 dark:text-gray-400 truncate">{user?.email}</p>
           </div>
         </div>

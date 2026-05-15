@@ -1,10 +1,12 @@
 // ── Auth ─────────────────────────────────────────────────────────────────
 
+export type UserRole = 'admin' | 'barista';
+
 export interface User {
   id: string;
   email: string;
   name: string;
-  role: string;
+  role: UserRole;
 }
 
 export interface LoginResponse {
@@ -56,6 +58,11 @@ export interface InventoryItem {
   updatedAt: string;
 }
 
+export interface RestockDto {
+  quantity: number;
+  operation: 'add' | 'set';
+}
+
 // ── Analytics ─────────────────────────────────────────────────────────────
 
 export interface ProductStat {
@@ -73,7 +80,7 @@ export interface Analytics {
   allProducts: ProductStat[];
 }
 
-// ── Menu catalogue (used in order form) ──────────────────────────────────
+// ── Menu catalogue ────────────────────────────────────────────────────────
 
 export interface MenuItem {
   productId: string;
@@ -81,4 +88,21 @@ export interface MenuItem {
   price: number;
   category: string;
   emoji: string;
+}
+
+// ── Staff ─────────────────────────────────────────────────────────────────
+
+export interface StaffMember {
+  id: string;
+  name: string;
+  email: string;
+  role: UserRole;
+  createdAt: string;
+}
+
+export interface CreateStaffDto {
+  name: string;
+  email: string;
+  password: string;
+  role: UserRole;
 }
