@@ -212,9 +212,9 @@ export default function InventoryPage() {
         {/* Stats row */}
         {items.length > 0 && (
           <div className="grid grid-cols-3 gap-4">
-            <StatCard label="Tổng sản phẩm" value={items.length} icon="📦"/>
-            <StatCard label="Còn hàng"       value={items.filter((i) => i.quantity > 0).length} icon="✅"/>
-            <StatCard label="Gần hết / Hết hàng"      value={lowStock.length}  icon="⚠️"/>
+            <StatCard label="Tổng sản phẩm" value={items.length}/>
+            <StatCard label="Còn hàng"       value={items.filter((i) => i.quantity > 0).length}/>
+            <StatCard label="Gần hết / Hết hàng"      value={lowStock.length}/>
           </div>
         )}
 
@@ -306,10 +306,10 @@ export default function InventoryPage() {
   );
 }
 
-function StatCard({ label, value, icon }: { label: string; value: number; icon: string }) {
+function StatCard({ label, value, icon }: { label: string; value: number; icon?: string }) {
   return (
     <Card className="flex items-center gap-4">
-      <span className="text-2xl">{icon}</span>
+      {icon && <span className="text-2xl">{icon}</span>}
       <div>
         <p className="text-2xl font-bold text-gray-900 dark:text-white">{value}</p>
         <p className="text-xs text-gray-500 dark:text-gray-400">{label}</p>

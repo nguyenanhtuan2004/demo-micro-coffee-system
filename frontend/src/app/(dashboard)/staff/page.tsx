@@ -298,7 +298,7 @@ export default function StaffPage() {
 
                     {/* Role */}
                     <span className={`text-xs font-medium px-2.5 py-1 rounded-full flex-shrink-0 ${ROLE_BADGE[member.role]}`}>
-                      {member.role === 'admin' ? '👑 Admin' : '☕ Barista'}
+                      {member.role === 'admin' ? 'Admin' : 'Barista'}
                     </span>
 
                     {/* Joined */}
@@ -327,15 +327,15 @@ export default function StaffPage() {
           <CardTitle>Quyền vai trò</CardTitle>
           <div className="mt-3 grid grid-cols-2 gap-3">
             {[
-              { role: 'admin' as UserRole,   label: '👑 Admin',   perms: ['Tạo đơn hàng', 'Xem tồn kho', 'Chỉnh sửa kho', 'Xem doanh số', 'Quản lý nhân viên'] },
-              { role: 'barista' as UserRole, label: '☕ Barista', perms: ['Tạo đơn hàng', 'Xem tồn kho'] },
+              { role: 'admin' as UserRole,   label: 'Admin',   perms: ['Tạo đơn hàng', 'Xem tồn kho', 'Chỉnh sửa kho', 'Xem doanh số', 'Quản lý nhân viên'] },
+              { role: 'barista' as UserRole, label: 'Barista', perms: ['Tạo đơn hàng', 'Xem tồn kho'] },
             ].map(({ role, label, perms }) => (
               <div key={role} className={`p-3 rounded-lg border ${role === 'admin' ? 'border-coffee-200 dark:border-coffee-800 bg-coffee-50 dark:bg-coffee-900/10' : 'border-blue-200 dark:border-blue-800 bg-blue-50 dark:bg-blue-900/10'}`}>
                 <p className="text-xs font-semibold mb-2 text-gray-800 dark:text-gray-200">{label}</p>
                 <ul className="space-y-1">
                   {perms.map((p) => (
                     <li key={p} className="text-xs text-gray-600 dark:text-gray-400 flex items-center gap-1.5">
-                      <span className="text-emerald-500">✓</span>{p}
+                      <span className="text-emerald-500">-</span>{p}
                     </li>
                   ))}
                 </ul>

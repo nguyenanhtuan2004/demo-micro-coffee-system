@@ -1,6 +1,6 @@
 # Nhóm 2 — Microservices - System Coffee Shop
 
-> Hệ thống microservices demo xây dựng dựa trên kiến trúc trong cuốn *Microservices Patterns* của Chris Richardson.
+> Hệ thống microservices demo POS (point of sale) xây dựng dựa trên kiến trúc trong cuốn *Microservices Patterns* của Chris Richardson.
 > Demonstrates Saga, CQRS, Event-Driven Architecture, API Gateway, and independent service databases.
 
 ---
