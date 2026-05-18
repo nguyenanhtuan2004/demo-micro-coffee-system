@@ -73,13 +73,13 @@ Analytics Service
 ```
 | Service           | URL                             |
 |-------------------|---------------------------------|
-| Frontend          | http://localhost:3005            |
-| API Gateway       | http://localhost:3000            |
-| RabbitMQ UI       | http://localhost:15672           |
-| Auth Service      | http://localhost:3001            |
-| Order Service     | http://localhost:3002            |
-| Inventory Service | http://localhost:3003            |
-| Analytics Service | http://localhost:3004            |
+| Frontend          | http://localhost:3005           |
+| API Gateway       | http://localhost:3000           |
+| RabbitMQ UI       | http://localhost:15672          |
+| Auth Service      | http://localhost:3001           |
+| Order Service     | http://localhost:3002           |
+| Inventory Service | http://localhost:3003           |
+| Analytics Service | http://localhost:3004           |
 
 ```
 ### Demo Login
