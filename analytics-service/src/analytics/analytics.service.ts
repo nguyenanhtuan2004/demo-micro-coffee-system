@@ -14,6 +14,15 @@ interface OrderConfirmedEvent {
   }[];
 }
 
+interface OrderRejectedEvent {
+  orderId: string;
+  reason: string;
+}
+
+interface OrderCompletedEvent {
+  orderId: string;
+}
+
 @Injectable()
 export class AnalyticsService implements OnModuleInit {
   private readonly logger = new Logger(AnalyticsService.name);
@@ -24,32 +33,34 @@ export class AnalyticsService implements OnModuleInit {
   ) {}
 
   async onModuleInit() {
-    // Seed the singleton revenue stats row if not exists
     await this.prisma.revenueStats.upsert({
       where: { id: 'singleton' },
       update: {},
       create: { id: 'singleton', totalOrders: 0, totalRevenue: 0 },
     });
 
-    setTimeout(() => this.subscribeToOrders(), 5000);
+    setTimeout(() => this.subscribeToEvents(), 5000);
   }
 
-  // ── CQRS: consume events to build read model ──────────────────────────
-
-  private async subscribeToOrders() {
+  private async subscribeToEvents() {
     await this.mq.subscribe(
       'analytics-service-queue',
-      ['order.confirmed'],
-      async (data: OrderConfirmedEvent) => {
-        await this.handleOrderConfirmed(data);
+      ['order.confirmed', 'order.rejected', 'order.completed'],
+      async (data, routingKey) => {
+        if (routingKey === 'order.confirmed') {
+          await this.handleOrderConfirmed(data);
+        } else if (routingKey === 'order.rejected') {
+          await this.handleOrderRejected(data);
+        } else if (routingKey === 'order.completed') {
+          await this.handleOrderCompleted(data);
+        }
       },
     );
   }
 
   private async handleOrderConfirmed(event: OrderConfirmedEvent) {
-    this.logger.log(`📊 Updating analytics for order ${event.orderId}`);
+    this.logger.log(`Updating analytics for confirmed order ${event.orderId}`);
 
-    // Update global revenue stats
     await this.prisma.revenueStats.update({
       where: { id: 'singleton' },
       data: {
@@ -58,7 +69,6 @@ export class AnalyticsService implements OnModuleInit {
       },
     });
 
-    // Update per-product stats
     for (const item of event.items) {
       await this.prisma.productStats.upsert({
         where: { productId: item.productId },
@@ -74,11 +84,23 @@ export class AnalyticsService implements OnModuleInit {
         },
       });
     }
-
-    this.logger.log(`✅ Analytics updated`);
   }
 
-  // ── REST: serve the read model ────────────────────────────────────────
+  private async handleOrderRejected(event: OrderRejectedEvent) {
+    this.logger.warn(`Counting rejected order ${event.orderId}: ${event.reason}`);
+    await this.prisma.revenueStats.update({
+      where: { id: 'singleton' },
+      data: { rejectedOrders: { increment: 1 } },
+    });
+  }
+
+  private async handleOrderCompleted(event: OrderCompletedEvent) {
+    this.logger.log(`Counting completed order ${event.orderId}`);
+    await this.prisma.revenueStats.update({
+      where: { id: 'singleton' },
+      data: { completedOrders: { increment: 1 } },
+    });
+  }
 
   async getAnalytics() {
     const revenue = await this.prisma.revenueStats.findUnique({
@@ -92,6 +114,8 @@ export class AnalyticsService implements OnModuleInit {
     return {
       totalOrders: revenue?.totalOrders ?? 0,
       totalRevenue: revenue?.totalRevenue ?? 0,
+      rejectedOrders: revenue?.rejectedOrders ?? 0,
+      completedOrders: revenue?.completedOrders ?? 0,
       topProducts: products.slice(0, 5),
       allProducts: products,
     };

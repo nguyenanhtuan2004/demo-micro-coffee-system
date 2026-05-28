@@ -36,7 +36,7 @@ export class UsersService {
   async create(dto: CreateUserDto) {
     const existing = await this.findByEmail(dto.email);
     if (existing) {
-      throw new ConflictException(`Email "${dto.email}" is already in use`);
+      throw new ConflictException(`Email "${dto.email}" đã được sử dụng`);
     }
 
     const hashed = await bcrypt.hash(dto.password, 10);

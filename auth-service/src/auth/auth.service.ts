@@ -15,12 +15,12 @@ export class AuthService {
     const user = await this.users.findByEmail(dto.email);
 
     if (!user) {
-      throw new UnauthorizedException('Invalid email or password');
+      throw new UnauthorizedException('Email hoặc mật khẩu không đúng');
     }
 
     const passwordValid = await bcrypt.compare(dto.password, user.password);
     if (!passwordValid) {
-      throw new UnauthorizedException('Invalid email or password');
+      throw new UnauthorizedException('Email hoặc mật khẩu không đúng');
     }
 
     const payload = {

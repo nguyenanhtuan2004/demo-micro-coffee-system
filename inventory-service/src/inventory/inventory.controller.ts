@@ -22,6 +22,11 @@ export class InventoryController {
     return this.inventory.findAll();
   }
 
+  @Get('low-stock')
+  findLowStock() {
+    return this.inventory.findLowStock();
+  }
+
   @Patch(':productId/restock')
   @UsePipes(new ValidationPipe({ whitelist: true, transform: true }))
   restock(
@@ -31,7 +36,7 @@ export class InventoryController {
   ) {
     // Double-check role tại service level (defense in depth)
     if (role !== 'admin') {
-      throw new ForbiddenException('Only admin can restock inventory');
+      throw new ForbiddenException('Chỉ admin được nhập kho');
     }
     return this.inventory.restock(productId, dto);
   }

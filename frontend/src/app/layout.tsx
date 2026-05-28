@@ -4,11 +4,11 @@ import './globals.css';
 import { Providers } from '@/components/Providers';
 import { Toaster } from 'sonner';
 
-const inter = Inter({ subsets: ['latin'] });
+const inter = Inter({ subsets: ['latin', 'vietnamese'] });
 
 export const metadata: Metadata = {
-  title: 'Nhóm 2 — System Coffee Shop',
-  description: 'Microservices Coffee Shop Management System',
+  title: 'Nhóm 2 - Hệ thống POS quán cà phê',
+  description: 'Hệ thống quản lý quán cà phê theo kiến trúc microservices',
 };
 
 export default function RootLayout({
@@ -17,7 +17,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="vi" suppressHydrationWarning>
       <body className={`${inter.className} bg-gray-50 dark:bg-gray-950 text-gray-900 dark:text-gray-100 antialiased`}>
         <Providers>
           {children}

@@ -17,7 +17,7 @@ import { CreateUserDto } from './dto/create-user.dto';
 // Guard đơn giản tại service level — defense in depth
 function requireAdmin(role: string) {
   if (role !== 'admin') {
-    throw new ForbiddenException('Only admin can manage staff');
+    throw new ForbiddenException('Chỉ admin được quản lý nhân sự');
   }
 }
 
@@ -53,7 +53,10 @@ export class UsersController {
       throw new ForbiddenException('You cannot delete your own account');
     }
     const user = await this.users.findById(id);
-    if (!user) throw new NotFoundException('User not found');
+    if (!user) throw new NotFoundException('Không tìm thấy người dùng');
+    if (user.role === 'admin') {
+      throw new ForbiddenException('Không thể xóa tài khoản admin');
+    }
     return this.users.remove(id);
   }
 }

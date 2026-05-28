@@ -12,6 +12,8 @@ model RevenueStats {
   id          String   @id @default("singleton")
   totalOrders Int      @default(0)
   totalRevenue Float   @default(0)
+  rejectedOrders Int    @default(0)
+  completedOrders Int   @default(0)
   updatedAt   DateTime @updatedAt
 
   @@map("revenue_stats")

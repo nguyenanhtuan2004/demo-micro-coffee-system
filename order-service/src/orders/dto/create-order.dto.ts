@@ -12,16 +12,9 @@ export class OrderItemDto {
   @IsString()
   productId: string;
 
-  @IsString()
-  name: string;
-
   @IsNumber()
   @Min(1)
   quantity: number;
-
-  @IsNumber()
-  @Min(0)
-  price: number;
 }
 
 export class CreateOrderDto {

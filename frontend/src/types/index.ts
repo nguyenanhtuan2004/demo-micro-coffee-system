@@ -14,9 +14,9 @@ export interface LoginResponse {
   user: User;
 }
 
-// ── Orders ────────────────────────────────────────────────────────────────
+// ── Đơn hàng ──────────────────────────────────────────────────────────────
 
-export type OrderStatus = 'PENDING' | 'CONFIRMED' | 'REJECTED';
+export type OrderStatus = 'PENDING' | 'CONFIRMED' | 'COMPLETED' | 'REJECTED';
 
 export interface OrderItem {
   id: string;
@@ -31,6 +31,7 @@ export interface Order {
   customerId: string;
   status: OrderStatus;
   totalPrice: number;
+  rejectionReason?: string | null;
   items: OrderItem[];
   createdAt: string;
   updatedAt: string;
@@ -38,22 +39,21 @@ export interface Order {
 
 export interface CreateOrderItemDto {
   productId: string;
-  name: string;
   quantity: number;
-  price: number;
 }
 
 export interface CreateOrderDto {
   items: CreateOrderItemDto[];
 }
 
-// ── Inventory ─────────────────────────────────────────────────────────────
+// ── Tồn kho ───────────────────────────────────────────────────────────────
 
 export interface InventoryItem {
   id: string;
   productId: string;
   name: string;
   quantity: number;
+  lowStockThreshold: number;
   unit: string;
   updatedAt: string;
 }
@@ -63,7 +63,7 @@ export interface RestockDto {
   operation: 'add' | 'set';
 }
 
-// ── Analytics ─────────────────────────────────────────────────────────────
+// ── Thống kê ──────────────────────────────────────────────────────────────
 
 export interface ProductStat {
   id: string;
@@ -76,21 +76,25 @@ export interface ProductStat {
 export interface Analytics {
   totalOrders: number;
   totalRevenue: number;
+  rejectedOrders: number;
+  completedOrders: number;
   topProducts: ProductStat[];
   allProducts: ProductStat[];
 }
 
-// ── Menu catalogue ────────────────────────────────────────────────────────
+// ── Menu ──────────────────────────────────────────────────────────────────
 
 export interface MenuItem {
+  id?: string;
   productId: string;
   name: string;
   price: number;
   category: string;
   emoji: string;
+  active?: boolean;
 }
 
-// ── Staff ─────────────────────────────────────────────────────────────────
+// ── Nhân sự ───────────────────────────────────────────────────────────────
 
 export interface StaffMember {
   id: string;

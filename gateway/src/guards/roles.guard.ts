@@ -30,7 +30,7 @@ export class RolesGuard implements CanActivate {
 
     if (!userRole || !requiredRoles.includes(userRole)) {
       throw new ForbiddenException(
-        `Access denied. Required role: ${requiredRoles.join(' or ')}`,
+        `Không có quyền truy cập. Cần vai trò: ${requiredRoles.join(' hoặc ')}`,
       );
     }
 

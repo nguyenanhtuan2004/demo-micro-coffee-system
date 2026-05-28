@@ -24,6 +24,9 @@ export class GatewayService {
   get analyticsUrl() {
     return this.config.get<string>('ANALYTICS_SERVICE_URL');
   }
+  get productUrl() {
+    return this.config.get<string>('PRODUCT_SERVICE_URL');
+  }
 
   async forward(
     serviceUrl: string,
@@ -52,8 +55,8 @@ export class GatewayService {
       if (error.response) {
         throw new HttpException(error.response.data, error.response.status);
       }
-      this.logger.error(`Service unavailable: ${url}`, error.message);
-      throw new HttpException('Service unavailable', 503);
+      this.logger.error(`Service không sẵn sàng: ${url}`, error.message);
+      throw new HttpException('Service không sẵn sàng', 503);
     }
   }
 }

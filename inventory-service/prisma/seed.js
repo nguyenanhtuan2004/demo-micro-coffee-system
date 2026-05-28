@@ -3,26 +3,30 @@ const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
 
 const products = [
-  { productId: 'espresso', name: 'Espresso', quantity: 100, unit: 'cups' },
-  { productId: 'cappuccino', name: 'Cappuccino', quantity: 80, unit: 'cups' },
-  { productId: 'latte', name: 'Latte', quantity: 90, unit: 'cups' },
-  { productId: 'americano', name: 'Americano', quantity: 120, unit: 'cups' },
-  { productId: 'mocha', name: 'Mocha', quantity: 60, unit: 'cups' },
-  { productId: 'cold-brew', name: 'Cold Brew', quantity: 40, unit: 'cups' },
-  { productId: 'croissant', name: 'Croissant', quantity: 50, unit: 'pieces' },
-  { productId: 'muffin', name: 'Blueberry Muffin', quantity: 30, unit: 'pieces' },
+  { productId: 'espresso', name: 'Espresso', quantity: 100, lowStockThreshold: 20, unit: 'ly' },
+  { productId: 'cappuccino', name: 'Cappuccino', quantity: 80, lowStockThreshold: 20, unit: 'ly' },
+  { productId: 'latte', name: 'Latte', quantity: 90, lowStockThreshold: 20, unit: 'ly' },
+  { productId: 'americano', name: 'Americano', quantity: 120, lowStockThreshold: 20, unit: 'ly' },
+  { productId: 'mocha', name: 'Mocha', quantity: 60, lowStockThreshold: 15, unit: 'ly' },
+  { productId: 'cold-brew', name: 'Cold Brew', quantity: 12, lowStockThreshold: 15, unit: 'ly' },
+  { productId: 'croissant', name: 'Croissant', quantity: 50, lowStockThreshold: 10, unit: 'cái' },
+  { productId: 'muffin', name: 'Blueberry Muffin', quantity: 8, lowStockThreshold: 10, unit: 'cái' },
 ];
 
 async function main() {
   for (const product of products) {
     await prisma.inventory.upsert({
       where: { productId: product.productId },
-      update: {},
+      update: {
+        name: product.name,
+        unit: product.unit,
+        lowStockThreshold: product.lowStockThreshold,
+      },
       create: product,
     });
   }
 
-  console.log(`Inventory seeded with ${products.length} products`);
+  console.log(`Đã seed tồn kho cho ${products.length} món`);
 }
 
 main()
