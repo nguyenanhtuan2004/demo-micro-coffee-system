@@ -153,34 +153,3 @@ docker compose up --build
 10. Nhập kho cho một món tồn thấp.
 11. Mở Thống kê để giải thích mô hình đọc CQRS.
 12. Mở Swagger và RabbitMQ UI để chứng minh API/event flow.
-
-## Ảnh minh họa
-
-Sau khi chạy demo, có thể bổ sung ảnh:
-
-- màn bán hàng
-- màn tồn kho
-- dashboard thống kê
-- RabbitMQ queues
-- Tài liệu API Swagger
-
-## Giới hạn hiện tại
-
-- Chưa có payment gateway thật
-- Chưa có hóa đơn PDF
-- Chưa có điểm thưởng khách hàng
-- Chưa có distributed tracing
-- Chưa triển khai Kubernetes
-- Chưa dùng outbox pattern production-grade
-- Chưa hỗ trợ nhiều chi nhánh
-
-## Hướng phát triển
-
-- Tích hợp thanh toán
-- Tích điểm khách hàng
-- Xuất hóa đơn PDF
-- Thêm outbox pattern để tăng độ tin cậy event
-- Thêm Grafana và distributed tracing
-- Triển khai Kubernetes
-- Thêm quy trình hoàn tiền
-- Hỗ trợ nhiều chi nhánh
